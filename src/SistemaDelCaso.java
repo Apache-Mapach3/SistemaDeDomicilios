@@ -10,7 +10,7 @@ public class SistemaDelCaso {
         int opcion = 0;
 
         do {
-            System.out.println("\n--- MENÚ OBLIGATORIO (EMPRESA DE DOMICILIOS) ---");
+            System.out.println("\n MENÚ DE DOMICILIOS");
             System.out.println("1. Registrar elemento");
             System.out.println("2. Ver todos los elementos registrados");
             System.out.println("3. Ver elementos pendientes");
