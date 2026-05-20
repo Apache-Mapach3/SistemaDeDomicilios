@@ -4,6 +4,7 @@ public class Cola {
     private Nodo fin = null;
 
     public boolean esVacia() { return cuenta == 0; }
+    public int tamanio() { return cuenta; }
 
     public void encolar(Object dato) throws Exception {
         if (dato == null) throw new Exception("El dato no puede ser nulo");
@@ -37,5 +38,26 @@ public class Cola {
         return frente.getDato();
     }
 
-    public int tamanio() { return cuenta; }
+    public boolean contiene(Object dato) {
+        Nodo actual = frente;
+        while (actual != null) {
+            if (actual.getDato().equals(dato)) return true;
+            actual = actual.getDerecha();
+        }
+        return false;
+    }
+
+    public void limpiar() {
+        frente = null;
+        fin = null;
+        cuenta = 0;
+    }
+
+    public void mostrar() {
+        Nodo actual = frente;
+        while (actual != null) {
+            System.out.println(actual.getDato());
+            actual = actual.getDerecha();
+        }
+    }
 }

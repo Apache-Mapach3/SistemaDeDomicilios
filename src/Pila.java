@@ -3,6 +3,7 @@ public class Pila {
     private Nodo cima = null;
 
     public boolean esVacia() { return cuenta == 0; }
+    public int tamanio() { return cuenta; }
 
     public void apilar(Object dato) throws Exception {
         if (dato == null) throw new Exception("El dato no puede ser nulo");
@@ -33,5 +34,34 @@ public class Pila {
         return cima.getDato();
     }
 
-    public int tamanio() { return cuenta; }
+    public boolean contiene(Object dato) {
+        Nodo actual = cima;
+        while (actual != null) {
+            if (actual.getDato().equals(dato)) return true;
+            actual = actual.getIzquierda();
+        }
+        return false;
+    }
+
+    public Object buscar(Object dato) {
+        Nodo actual = cima;
+        while (actual != null) {
+            if (actual.getDato().equals(dato)) return actual.getDato();
+            actual = actual.getIzquierda();
+        }
+        return null;
+    }
+
+    public void limpiar() {
+        cima = null;
+        cuenta = 0;
+    }
+
+    public void mostrar() {
+        Nodo actual = cima;
+        while (actual != null) {
+            System.out.println(actual.getDato());
+            actual = actual.getIzquierda();
+        }
+    }
 }
