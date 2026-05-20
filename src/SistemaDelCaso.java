@@ -10,7 +10,7 @@ public class SistemaDelCaso {
         int opcion = 0;
 
         do {
-            System.out.println("\n MENÚ DE DOMICILIOS");
+            System.out.println("\n--- MENU EMPRESA DE DOMICILIOS ---");
             System.out.println("1. Registrar elemento");
             System.out.println("2. Ver todos los elementos registrados");
             System.out.println("3. Ver elementos pendientes");
@@ -26,30 +26,48 @@ public class SistemaDelCaso {
             try {
                 opcion = Integer.parseInt(scanner.nextLine());
                 switch (opcion) {
-                    case 1: // Registrar
+                    case 1:
                         System.out.print("Número de Orden: "); String id = scanner.nextLine();
                         System.out.print("Cliente: "); String cliente = scanner.nextLine();
                         System.out.print("Dirección: "); String dir = scanner.nextLine();
                         System.out.print("Descripción: "); String desc = scanner.nextLine();
-                        Domicilio nuevo = new Domicilio(id, dir, cliente, desc);
 
-                        // REGLA OBLIGATORIA
+                        // 1. VALIDAR CAMPOS VACÍOS
+                        if(id.trim().isEmpty() || cliente.trim().isEmpty() || dir.trim().isEmpty() || desc.trim().isEmpty()){
+                            System.out.println("Error: Todos los campos son obligatorios.");
+                            break;
+                        }
+
+                        // 2. VALIDAR DUPLICADOS
+                        boolean existe = false;
+                        for (int i = 0; i < listaGeneral.cuentaElementos(); i++) {
+                            Domicilio dom = (Domicilio) listaGeneral.buscarDato(i);
+                            if(dom.getNumeroOrden().equals(id)){
+                                existe = true;
+                                break;
+                            }
+                        }
+
+                        if(existe){
+                            System.out.println("Error: Ya existe un domicilio registrado con ese número de orden.");
+                            break;
+                        }
+
+                        Domicilio nuevo = new Domicilio(id, dir, cliente, desc);
                         listaGeneral.agregar(nuevo);
                         colaPendientes.encolar(nuevo);
                         System.out.println("Domicilio registrado con éxito.");
                         break;
 
-                    case 2: // Ver todos los registrados de la Lista
+                    case 2:
                         if (listaGeneral.esVacia()) {
                             System.out.println("No hay registros en el sistema.");
                         } else {
-                            for (int i = 0; i < listaGeneral.cuentaElementos(); i++) {
-                                System.out.println(listaGeneral.buscarDato(i));
-                            }
+                            listaGeneral.mostrarAdelante();
                         }
                         break;
 
-                    case 3: // Ver pendientes (recorrer cola sin destruirla usando auxiliar)
+                    case 3:
                         if (colaPendientes.esVacia()) {
                             System.out.println("No hay domicilios pendientes.");
                         } else {
@@ -65,18 +83,17 @@ public class SistemaDelCaso {
                         }
                         break;
 
-                    case 4: // Procesar siguiente elemento
+                    case 4:
                         if (colaPendientes.esVacia()) {
                             System.out.println("No hay domicilios pendientes para procesar.");
                         } else {
-                            // REGLA OBLIGATORIA
                             Domicilio procesado = (Domicilio) colaPendientes.desencolar();
                             historialProcesados.apilar(procesado);
                             System.out.println("Procesando: " + procesado);
                         }
                         break;
 
-                    case 5: // Ver historial (Pila)
+                    case 5:
                         if (historialProcesados.esVacia()) {
                             System.out.println("El historial está vacío.");
                         } else {
@@ -92,7 +109,7 @@ public class SistemaDelCaso {
                         }
                         break;
 
-                    case 6: // Buscar por código en la Lista general
+                    case 6:
                         System.out.print("Ingrese el número de orden a buscar: ");
                         String buscarId = scanner.nextLine();
                         boolean encontrado = false;
@@ -107,7 +124,7 @@ public class SistemaDelCaso {
                         if (!encontrado) System.out.println("No se encontró ningún domicilio con ese código.");
                         break;
 
-                    case 7: // Cancelar elemento pendiente (USANDO COLA AUXILIAR)
+                    case 7:
                         System.out.print("Ingrese el número de orden a cancelar: ");
                         String cancelarId = scanner.nextLine();
                         Cola colaAux = new Cola();
@@ -122,25 +139,23 @@ public class SistemaDelCaso {
                                 colaAux.encolar(dom);
                             }
                         }
-                        // Devolver los elementos que no fueron cancelados a la cola original
                         while (!colaAux.esVacia()) {
                             colaPendientes.encolar(colaAux.desencolar());
                         }
                         if (!cancelado) System.out.println("No se encontró la orden en los pendientes.");
                         break;
 
-                    case 8: // Deshacer último procesamiento
+                    case 8:
                         if (historialProcesados.esVacia()) {
                             System.out.println("No hay procesamientos para deshacer.");
                         } else {
-                            // REGLA OBLIGATORIA
                             Domicilio ultimoProcesado = (Domicilio) historialProcesados.desapilar();
                             colaPendientes.encolar(ultimoProcesado);
                             System.out.println("Se deshizo el procesamiento de la orden: " + ultimoProcesado.getNumeroOrden());
                         }
                         break;
 
-                    case 9: // Ver cantidad de elementos en cada estructura
+                    case 9:
                         System.out.println("Total Registrados (Lista): " + listaGeneral.cuentaElementos());
                         System.out.println("Total Pendientes (Cola): " + colaPendientes.tamanio());
                         System.out.println("Total Procesados (Pila): " + historialProcesados.tamanio());
